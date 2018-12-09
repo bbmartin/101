@@ -7,15 +7,72 @@ from elements.Timer import Timer
 from interface import WINDOW, SCENE_PLAY, SCENE_SCORE
 
 class Game:
+	"""
+    A class used to represent the game 
+
+    ...
+
+    Attributes
+    ----------
+	score : int
+		score of the player
+    scene : Scene
+		current scene being displayed on-screen
+	high_scores : list
+		list of scores that the player has achieved arranged in ascending order
+
+    Methods
+    -------
+	load_from_file()
+		Loads scores from an external file
+	save()
+		Saves scores to an external file
+	get_current_scene()
+		Gets the current scene being displayed
+	next()
+		Sets the scene to the next one in the queue
+	set_score(score)
+		Sets the score to the most recent one
+	check_if_new_high_score()
+		Checks if a new high score has been achieved
+	add_score_to_high_scores(score)
+		Add the most recent score to the list of high scores
+	convert_score_to_text(score)
+		Converts the score, which is in seconds, into mm:ss format
+	get_timer()
+		Gets the game timer
+	start_timer()
+		Starts the game timer
+	reset_timer()
+		Resets the game timer
+	check_for_mouse_movement(x, y)
+		Checks for mouse movement and handles related events based on the current scene
+	check_for_mouse_press(x, y, button):
+		Checks for mouse press and handles related events based on the current scene
+	check_for_key_release(symbol):
+		Checks for key press and handles related events based on the current scene
+    """
 
 	score = 0
 
 	def __init__(self, first_scene):
+		"""
+        Parameters
+        ----------
+        score : int
+			score of the player
+		scene : Scene
+			current scene being displayed on-screen
+		high_scores : list
+			list of scores that the player has achieved arranged in ascending order
+        """
 		self.scene = first_scene 
 		self.load_from_file()
-		print(self.high_scores)
 	
 	def load_from_file(self):
+		"""
+			Loads scores from an external file
+		"""
 		file = open(constants.NAME_SAVE_FILE, 'r')
 		self.high_scores = []
 		for line in file:
@@ -23,45 +80,85 @@ class Game:
 		file.close()
 
 	def save(self):
+		"""
+			Saves scores to an external file
+		"""
 		file = open(constants.NAME_SAVE_FILE, 'w')
 		for high_score in self.high_scores:
 			file.write(str(high_score) + "\n")
 		file.close()
 	
 	def get_current_scene(self):
+		"""
+			Gets the current scene being displayed
+		"""
 		return self.scene
 	
 	def next(self):
+		"""
+			Sets the scene to the next one in the queue
+		"""
 		self.scene = self.scene._next		
 	
 	def set_score(self, score):
+		"""
+			Sets the score to the most recent one
+		"""
 		self.score = score
 		self.add_score_to_high_scores(score)
 
 	def check_if_new_high_score(self):
+		"""
+			Checks if a new high score has been achieved
+		"""
 		if self.score == self.high_scores[0]:
 			return True
 		return False
 
 	def add_score_to_high_scores(self, score):
+		"""
+			Add the most recent score to the list of high scores
+		"""
 		self.high_scores.append(score)	
 		self.high_scores = sorted(self.high_scores)
 	
 	def convert_score_to_text(self, score):
+		"""
+			Converts the score, which is in seconds, into mm:ss format
+		"""
 		m, s = divmod(score, 60)
 		return '%02d:%02d' % (m, s)
 
 	def get_timer(self):
+		"""
+			Gets the game timer
+		"""
 		return SCENE_PLAY.get_element(Timer)
 	
 	def start_timer(self):
+		"""
+			Starts the game timer
+		"""
 		if self.get_timer() is not None:
 			self.get_timer().running = True
 	
 	def reset_timer(self):
+		"""
+			Resets the game timer
+		"""
 		self.get_timer().reset()
 	
 	def check_for_mouse_movement(self, x, y):
+		"""
+			Checks for mouse movement and handles related events based on the current scene
+
+			Parameters
+			----------
+			x : int 
+				The x-coordinate of the mouse cursor after movement	
+			y : int 
+				The y-coordinate of the mouse cursor after movement
+		"""
 		if self.get_current_scene().name == constants.NAME_SCENE_START:
 			play_button = self.get_current_scene().get_element(Button)
 			if play_button.under_mouse(x, y):
@@ -91,6 +188,16 @@ class Game:
 			WINDOW.set_mouse_cursor(cursor)
 	
 	def check_for_mouse_press(self, x, y, button):
+		"""
+			Checks for mouse press and handles related events based on the current scene
+
+			Parameters
+			----------
+			x : int 
+				The x-coordinate of the mouse cursor after clicking	
+			y : int 
+				The y-coordinate of the mouse cursor after clicking
+		"""
 		if self.get_current_scene().name == constants.NAME_SCENE_LOGO:
 			if button is pyglet.window.mouse.LEFT:
 				self.next()
@@ -113,6 +220,14 @@ class Game:
 				self.next()
 	
 	def check_for_key_release(self, symbol):
+		"""
+			Checks for key press and handles related events based on the current scene
+
+			Parameters
+			----------
+			symbol: pyglet.window.key
+				the key pressed
+		"""
 		if self.get_current_scene().name == constants.NAME_SCENE_PLAY:
 			if symbol is pyglet.window.key.SPACE:
 				deck = self.get_current_scene().get_element(Deck)
@@ -131,5 +246,6 @@ class Game:
 					self.get_current_scene().elements[2].text = "High Score: " + self.convert_score_to_text(self.high_scores[0])
 					if self.check_if_new_high_score():
 						self.get_current_scene().elements[2].color = constants.COLOR_RED
-					print(self.high_scores)
+					else:
+						self.get_current_scene().elements[2].color = constants.COLOR_BLACK
 					self.save()

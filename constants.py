@@ -1,12 +1,11 @@
-# Save File
+# GAME CONSTANTS
+
+# Save File Path
 NAME_SAVE_FILE = "scores.txt"
 
 # Colors
 COLOR_BLACK = (0, 0, 0, 255)
-COLOR_SILVER = (229, 228, 226, 255)
-COLOR_GOLD = (171, 160, 0, 255)
 COLOR_RED = (255, 0, 12, 255)
-COLOR_GREEN = (102, 185, 51, 255)
 
 # Font
 GAME_FONT_NAME = "Light Pixel-7"
@@ -29,7 +28,9 @@ CARD_RADIUS = 50
 CARD_SPACING = 20
 
 # Timer
+## Font Size
 TIMER_FONT_SIZE = 75
+## y-offset from the center
 TIMER_Y_OFFSET = 275 
 
 # Scene Names
