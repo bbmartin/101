@@ -95,6 +95,8 @@ class Deck:
 			Deck
 				Returns itself	
 		"""
+		if len(self.cards) > 0:
+			self.cards = []
 		i = 0
 		card_faces = []
 		self.get_card_positions().shuffle_card_positions()

@@ -117,7 +117,7 @@ class Game:
 
 	def add_score_to_high_scores(self, score):
 		"""
-			Add the most recent score to the list of high scores
+			Adds the most recent score to the list of high scores
 		"""
 		self.high_scores.append(score)	
 		self.high_scores = sorted(self.high_scores)
@@ -206,6 +206,8 @@ class Game:
 			if button is pyglet.window.mouse.LEFT:
 				if play_button.under_mouse(x, y):
 					self.next()
+					if self.get_current_scene().get_element(Deck).check_if_empty():
+						self.get_current_scene().get_element(Deck).populate()
 					self.get_current_scene().get_element(Timer).running = True
 		elif self.get_current_scene().name == constants.NAME_SCENE_PLAY:
 			deck = self.get_current_scene().get_element(Deck)
@@ -249,3 +251,4 @@ class Game:
 					else:
 						self.get_current_scene().elements[2].color = constants.COLOR_BLACK
 					self.save()
+					SCENE_PLAY.get_element(Deck).populate()
